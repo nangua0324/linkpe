@@ -12,18 +12,22 @@
   <center>
     <div class="card">
       <div class="card-content">
-        <a href="linkpe.html?new"><img src="img/logo.png" height="50" alt="LinkPe Logo"></a>
+        <a href="linkpe.html?new"><img src="img/logo.png" height="50"></a>
         <h5 id="name" style="color: #101010;"></h5>
         <canvas id="qr"></canvas>
-        <p style="color:#555;">or scan the QR code with any UPI app</p>
-        <div style="margin-top: 10px;">
-          <button id="payNowButton" class="btn">Click here to Pay Now</button>
+        <p style="color:#555;">or scan below QR with any UPI App</p>
+
+        <div style="margin-top: 16px;">
+          <button class="btn" id="gpay">Pay with Google Pay</button>
+          <br><br>
+          <button class="btn" id="paytm">Pay with Paytm</button>
         </div>
+
         <br>
         <a href="linkpe.html?new" style="color: #777;">Click here to create your own payment link</a>
-        <br><br>
+        <br>
         <p style="color: #555">
-          <b>Developed by:</b>
+          <b>Developed BY : </b>
           <a href="https://ptprashanttripathi.github.io" style="color: #999;">Pt. Prashant Tripathi</a>
           <img src="https://visitor-badge.vercel.app/page/linkpe?color=Blue" />
         </p>
@@ -31,11 +35,45 @@
     </div>
   </center>
 
-  <!-- Load QRious for QR code generation -->
   <script src="qrious/qrious.min.js"></script>
+  <script>
+    if (window.location.search.indexOf('pa') > -1) {
+      const urlParams = new URLSearchParams(window.location.search);
+      const pn = urlParams.get('pn') || "";
+      const pa = urlParams.get('pa') || "";
+      const cu = urlParams.get('cu') || "INR";
+      const am = urlParams.get('am') || "";
 
-  <!-- Load your custom UPI redirection logic -->
-  <script src="payment.js"></script>
+      const user = pn || pa;
+      const upiParams = `pa=${pa}&pn=${pn}&cu=${cu}&am=${am}`;
+      const upiURL = `upi://pay?${upiParams}`;
+
+      document.getElementById("name").innerHTML =
+        `Click a button or scan QR to pay <b>${user}</b>`;
+
+      new QRious({
+        element: document.getElementById('qr'),
+        background: '#fff',
+        foreground: '#000',
+        size: 200,
+        level: 'H',
+        value: upiURL
+      });
+
+      // Pay with Google Pay
+      document.getElementById("gpay").addEventListener("click", () => {
+        window.location.href = `tez://upi/pay?${upiParams}`;
+      });
+
+      // Pay with Paytm
+      document.getElementById("paytm").addEventListener("click", () => {
+        window.location.href = `paytmmp://pay?${upiParams}`;
+      });
+
+    } else {
+      location.replace("linkpe.html?error");
+    }
+  </script>
 </body>
 
 </html>
