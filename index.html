@@ -3,8 +3,6 @@
 
 <head>
   <title>LinkPe | UPI LINK Generator</title>
-  <meta name="title" content="LinkPe | UPI LINK Generator">
-  <meta name="description" content="LinkPe | UPI LINK Generator - https://github.com/PtPrashantTripathi/linkpe">
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="css/main.css">
@@ -18,10 +16,8 @@
         <h5 id="name" style="color: #101010;"></h5>
         <canvas id="qr"></canvas>
         <div style="margin-top: 2px;">
-          <!-- 隐藏的真正跳转链接 -->
-          <a id="linkpe" href="#" style="display:none;">UPI Link</a>
-          <!-- 点击按钮会模拟点击上面的 <a> -->
-          <button class='btn' onclick="payNow()">Click here to Pay Now</button>
+          <!-- 真正跳转用的 <a> -->
+          <a id="linkpe" href="#" target="_blank" class="btn">Click here to Pay Now</a>
         </div>
         <br>
         <a href="linkpe.html?new" style="color: #777;">Click here to create your own payment link</a>
@@ -59,11 +55,6 @@
         level: 'H',
         value: upiURL
       });
-
-      // 点击按钮触发跳转
-      window.payNow = function () {
-        document.getElementById("linkpe").click();
-      }
     } else {
       location.replace("linkpe.html?error");
     }
