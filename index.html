@@ -16,9 +16,10 @@
         <h5 id="name" style="color: #101010;"></h5>
         <canvas id="qr"></canvas>
         <p style="color:#555;">or scan below QR with any UPI App</p>
-        <div style="margin-top: 2px;">
-          <button id="payNowButton" class="btn">Click here to Pay Now</button>
-        </div>
+
+        <!-- 多种支付方式按钮 -->
+        <div id="paymentButtons" style="margin-top: 10px;"></div>
+
         <br>
         <a href="linkpe.html?new" style="color: #777;">Click here to create your own payment link</a>
         <br>
@@ -33,8 +34,54 @@
 
   <!-- 加载二维码库 -->
   <script src="qrious/qrious.min.js"></script>
-  <!-- 加载你刚刚创建的 payment.js -->
-  <script src="payment.js"></script>
+
+  <!-- 嵌入 payment.js 功能 -->
+  <script>
+    if (window.location.search.indexOf('pa') > -1) {
+      const urlParams = new URLSearchParams(window.location.search);
+      const pn = urlParams.get('pn') || "";
+      const pa = urlParams.get('pa') || "";
+      const cu = urlParams.get('cu') || "INR";
+      const am = urlParams.get('am') || "";
+
+      const user = (pn !== "") ? pn : pa;
+      const upiURL = `upi://pay?pa=${pa}&pn=${pn}&cu=${cu}&am=${am}`;
+
+      document.getElementById("name").innerHTML =
+        `Click on Pay Now or Scan QR and Pay using any UPI App<br><b>${user}</b>`;
+
+      new QRious({
+        element: document.getElementById('qr'),
+        background: '#fff',
+        foreground: '#000',
+        size: 200,
+        level: 'H',
+        value: upiURL
+      });
+
+      const baseQuery = `pay?pa=${pa}&pn=${pn}&cu=${cu}&am=${am}`;
+      const buttons = [
+        { name: "Google Pay", url: `tez://${baseQuery}` },
+        { name: "PhonePe", url: `phonepe://${baseQuery}` },
+        { name: "Paytm", url: `paytmmp://${baseQuery}` },
+        { name: "UPI Intent", url: `intent://${baseQuery}#Intent;scheme=upi;end;` },
+        { name: "Generic UPI", url: `upi://pay?pa=${pa}&pn=${pn}&cu=${cu}&am=${am}` }
+      ];
+
+      const container = document.getElementById('paymentButtons');
+      buttons.forEach(btn => {
+        const button = document.createElement('a');
+        button.textContent = `Pay with ${btn.name}`;
+        button.href = btn.url;
+        button.className = 'btn';
+        button.style.margin = '6px';
+        button.style.display = 'inline-block';
+        container.appendChild(button);
+      });
+    } else {
+      location.replace("linkpe.html?error");
+    }
+  </script>
 </body>
 
 </html>
