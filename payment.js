@@ -20,9 +20,18 @@ if (window.location.search.indexOf('pa') > -1) {
     value: upiURL
   });
 
+  console.log("UPI URL:", upiURL);
+
+
   document.getElementById("payNowButton").addEventListener("click", function () {
-    window.location.href = upiURL;
+  const a = document.createElement("a");
+  a.href = upiURL;
+  a.style.display = "none";
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
   });
+
 
 } else {
   location.replace("linkpe.html?error");
