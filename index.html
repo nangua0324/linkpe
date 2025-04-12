@@ -16,8 +16,8 @@
         <h5 id="name" style="color: #101010;"></h5>
         <canvas id="qr"></canvas>
         <div style="margin-top: 2px;">
-          <!-- 真正跳转用的 <a> -->
-          <a id="linkpe" href="#" target="_blank" class="btn">Click here to Pay Now</a>
+          <!-- 不再用 <a> 跳转，改用 button + JS -->
+          <button id="payNowButton" class="btn">Click here to Pay Now</button>
         </div>
         <br>
         <a href="linkpe.html?new" style="color: #777;">Click here to create your own payment link</a>
@@ -34,18 +34,17 @@
   <script src="qrious/qrious.min.js"></script>
   <script>
     if (window.location.search.indexOf('pa') > -1) {
-      const queryString = window.location.search;
-      const urlParams = new URLSearchParams(queryString);
-      const pn = urlParams.get('pn');
-      const pa = urlParams.get('pa');
-      const cu = urlParams.get('cu');
-      const am = urlParams.get('am');
+      const urlParams = new URLSearchParams(window.location.search);
+      const pn = urlParams.get('pn') || "";
+      const pa = urlParams.get('pa') || "";
+      const cu = urlParams.get('cu') || "INR";
+      const am = urlParams.get('am') || "";
 
-      const user = (pn && pn !== "") ? pn : pa;
+      const user = (pn !== "") ? pn : pa;
       const upiURL = `upi://pay?pa=${pa}&pn=${pn}&cu=${cu}&am=${am}`;
 
-      document.getElementById("name").innerHTML = `Click on Pay Now or Scan QR and Pay using any UPI App<br><b>${user}</b>`;
-      document.getElementById("linkpe").href = upiURL;
+      document.getElementById("name").innerHTML =
+        `Click on Pay Now or Scan QR and Pay using any UPI App<br><b>${user}</b>`;
 
       new QRious({
         element: document.getElementById('qr'),
@@ -55,6 +54,11 @@
         level: 'H',
         value: upiURL
       });
+
+      document.getElementById("payNowButton").addEventListener("click", function () {
+        window.location.href = upiURL;
+      });
+
     } else {
       location.replace("linkpe.html?error");
     }
