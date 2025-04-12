@@ -6,7 +6,10 @@ if (window.location.search.indexOf('pa') > -1) {
   const am = urlParams.get('am') || "";
 
   const user = (pn !== "") ? pn : pa;
-  const upiURL = `upi://pay?pa=${pa}&pn=${pn}&cu=${cu}&am=${am}`;
+
+  // 构建通用的 upi 参数部分
+  const upiParams = `pay?pa=${pa}&pn=${pn}&cu=${cu}&am=${am}`;
+  const upiURL = `upi://${upiParams}`; // 用于 QR 码生成
 
   document.getElementById("name").innerHTML =
     `Click on Pay Now or Scan QR and Pay using any UPI App<br><b>${user}</b>`;
@@ -20,18 +23,27 @@ if (window.location.search.indexOf('pa') > -1) {
     value: upiURL
   });
 
-  console.log("UPI URL:", upiURL);
-
-
   document.getElementById("payNowButton").addEventListener("click", function () {
-  const a = document.createElement("a");
-  a.href = upiURL;
-  a.style.display = "none";
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
-  });
+    const userAgent = navigator.userAgent.toLowerCase();
 
+    // 判断是否为 Android
+    const isAndroid = /android/.test(userAgent);
+
+    if (isAndroid) {
+      if (userAgent.includes("gpay") || userAgent.includes("google")) {
+        // Google Pay 跳转
+        window.location.href = `tez://${upiParams}`;
+      } else if (userAgent.includes("paytm")) {
+        // Paytm 跳转
+        window.location.href = `paytmmp://${upiParams}`;
+      } else {
+        // 默认尝试 Google Pay 跳转
+        window.location.href = `tez://${upiParams}`;
+      }
+    } else {
+      alert("UPI 支付跳转仅在支持的 Android 设备和 App 中有效，请使用扫码方式支付。");
+    }
+  });
 
 } else {
   location.replace("linkpe.html?error");
