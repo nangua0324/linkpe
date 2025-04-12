@@ -35,7 +35,7 @@
   <!-- 加载二维码库 -->
   <script src="qrious/qrious.min.js"></script>
 
-  <!-- 嵌入 payment.js 功能 -->
+  <!-- 内嵌的支付跳转逻辑 -->
   <script>
     if (window.location.search.indexOf('pa') > -1) {
       const urlParams = new URLSearchParams(window.location.search);
@@ -59,25 +59,27 @@
         value: upiURL
       });
 
-      const baseQuery = `pay?pa=${pa}&pn=${pn}&cu=${cu}&am=${am}`;
+      // 各大平台链接
       const buttons = [
-        { name: "Google Pay", url: `tez://${baseQuery}` },
-        { name: "PhonePe", url: `phonepe://${baseQuery}` },
-        { name: "Paytm", url: `paytmmp://${baseQuery}` },
-        { name: "UPI Intent", url: `intent://${baseQuery}#Intent;scheme=upi;end;` },
-        { name: "Generic UPI", url: `upi://pay?pa=${pa}&pn=${pn}&cu=${cu}&am=${am}` }
+        { name: "Google Pay", url: `tez://upi/pay?pa=${pa}&pn=${pn}&cu=${cu}&am=${am}` },
+        { name: "PhonePe", url: `phonepe://upi/pay?pa=${pa}&pn=${pn}&cu=${cu}&am=${am}` },
+        { name: "Paytm", url: `paytmmp://pay?pa=${pa}&pn=${pn}&cu=${cu}&am=${am}` },
+        { name: "Intent Link", url: `intent://pay?pa=${pa}&pn=${pn}&cu=${cu}&am=${am}#Intent;scheme=upi;package=com.google.android.apps.nbu.paisa.user;end;` },
+        { name: "Generic UPI", url: upiURL }
       ];
 
       const container = document.getElementById('paymentButtons');
       buttons.forEach(btn => {
-        const button = document.createElement('a');
-        button.textContent = `Pay with ${btn.name}`;
-        button.href = btn.url;
-        button.className = 'btn';
-        button.style.margin = '6px';
-        button.style.display = 'inline-block';
-        container.appendChild(button);
+        const a = document.createElement('a');
+        a.textContent = `Pay with ${btn.name}`;
+        a.href = btn.url;
+        a.className = 'btn';
+        a.style.margin = '6px';
+        a.style.display = 'inline-block';
+        a.style.textDecoration = 'none';
+        container.appendChild(a);
       });
+
     } else {
       location.replace("linkpe.html?error");
     }
