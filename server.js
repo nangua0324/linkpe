@@ -2,15 +2,15 @@ var express = require("express");
 var app = express();
 const port = process.argv[2] || 8080;
 
-// Create a server
-// Serves resources from public folder
+// 提供静态资源
 app.use(express.static(__dirname));
 
-// 👉 添加这段！让 /linkpe 正确返回 linkpe.html
+// 👉 让 /linkpe 自动跳转到 index.html 并保留参数
 app.get('/linkpe', (req, res) => {
-  res.sendFile(__dirname + '/linkpe.html');
+  const query = req.url.includes('?') ? req.url.slice(req.url.indexOf('?')) : '';
+  res.redirect('/index.html' + query);
 });
 
+// 启动服务
 var server = app.listen(port);
-
 console.log("Server running at http://localhost:" + port);
