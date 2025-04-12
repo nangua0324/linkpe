@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Pay via UPI - LinkPe</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="css/main.css">
+  <style>
+    body {
+      font-family: sans-serif;
+      background: #f4f4f4;
+      padding: 20px;
+    }
+
+    .card {
+      max-width: 400px;
+      margin: auto;
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      text-align: center;
+    }
+
+    .btn {
+      display: inline-block;
+      margin: 10px;
+      padding: 12px 20px;
+      font-size: 16px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      color: white;
+    }
+
+    .paytm {
+      background-color: #002970;
+    }
+
+    .gpay {
+      background-color: #4285f4;
+    }
+
+    canvas {
+      margin: 20px 0;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="card">
+    <img src="img/logo.png" height="50" alt="LinkPe Logo" />
+    <h3 id="userText"></h3>
+    <canvas id="qr"></canvas>
+    <p style="color:#666;">Scan QR with any UPI App</p>
+
+    <button class="btn paytm" id="paytmBtn">Pay with Paytm</button>
+    <button class="btn gpay" id="gpayBtn">Pay with Google Pay</button>
+
+    <p style="margin-top: 30px; color: #999; font-size: 13px;">
+      Developed by <a href="https://ptprashanttripathi.github.io" target="_blank" style="color:#777;">Pt. Prashant Tripathi</a>
+    </p>
+  </div>
+
+  <script src="qrious/qrious.min.js"></script>
+  <script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const pn = urlParams.get('pn') || "";
+    const pa = urlParams.get('pa') || "";
+    const cu = urlParams.get('cu') || "INR";
+    const am = urlParams.get('am') || "";
+
+    if (!pa) {
+      document.body.innerHTML = "<h3 style='text-align:center;'>Invalid Payment Link</h3>";
+      throw new Error("Missing parameters");
+    }
+
+    const user = (pn !== "") ? pn : pa;
+    const upiURL = `upi://pay?pa=${pa}&pn=${pn}&cu=${cu}&am=${am}`;
+
+    document.getElementById("userText").innerHTML =
+      `Pay <b>${am} ${cu}</b> to <b>${user}</b>`;
+
+    new QRious({
+      element: document.getElementById("qr"),
+      size: 220,
+      value: upiURL
+    });
+
+    // Paytm 支付跳转
+    document.getElementById("paytmBtn").onclick = () => {
+      window.location.href = `paytm://upi/pay?pa=${pa}&pn=${pn}&cu=${cu}&am=${am}`;
+    };
+
+    // Google Pay 支付跳转
+    document.getElementById("gpayBtn").onclick = () => {
+      window.location.href = `tez://upi/pay?pa=${pa}&pn=${pn}&cu=${cu}&am=${am}`;
+    };
+  </script>
+</body>
+
+</html>
