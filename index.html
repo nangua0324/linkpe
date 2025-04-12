@@ -12,19 +12,18 @@
   <center>
     <div class="card">
       <div class="card-content">
-        <a href="linkpe.html?new"><img src="img/logo.png" height="50"></a>
+        <a href="linkpe.html?new"><img src="img/logo.png" height="50" alt="LinkPe Logo"></a>
         <h5 id="name" style="color: #101010;"></h5>
         <canvas id="qr"></canvas>
-        <p style="color:#555;">or scan below QR with any UPI App</p>
-
-        <!-- 多种支付方式按钮 -->
-        <div id="paymentButtons" style="margin-top: 10px;"></div>
-
+        <p style="color:#555;">or scan the QR code with any UPI app</p>
+        <div style="margin-top: 10px;">
+          <button id="payNowButton" class="btn">Click here to Pay Now</button>
+        </div>
         <br>
         <a href="linkpe.html?new" style="color: #777;">Click here to create your own payment link</a>
-        <br>
+        <br><br>
         <p style="color: #555">
-          <b>Developed BY : </b>
+          <b>Developed by:</b>
           <a href="https://ptprashanttripathi.github.io" style="color: #999;">Pt. Prashant Tripathi</a>
           <img src="https://visitor-badge.vercel.app/page/linkpe?color=Blue" />
         </p>
@@ -32,58 +31,11 @@
     </div>
   </center>
 
-  <!-- 加载二维码库 -->
+  <!-- Load QRious for QR code generation -->
   <script src="qrious/qrious.min.js"></script>
 
-  <!-- 内嵌的支付跳转逻辑 -->
-  <script>
-    if (window.location.search.indexOf('pa') > -1) {
-      const urlParams = new URLSearchParams(window.location.search);
-      const pn = urlParams.get('pn') || "";
-      const pa = urlParams.get('pa') || "";
-      const cu = urlParams.get('cu') || "INR";
-      const am = urlParams.get('am') || "";
-
-      const user = (pn !== "") ? pn : pa;
-      const upiURL = `upi://pay?pa=${pa}&pn=${pn}&cu=${cu}&am=${am}`;
-
-      document.getElementById("name").innerHTML =
-        `Click on Pay Now or Scan QR and Pay using any UPI App<br><b>${user}</b>`;
-
-      new QRious({
-        element: document.getElementById('qr'),
-        background: '#fff',
-        foreground: '#000',
-        size: 200,
-        level: 'H',
-        value: upiURL
-      });
-
-      // 各大平台链接
-      const buttons = [
-        { name: "Google Pay", url: `tez://upi/pay?pa=${pa}&pn=${pn}&cu=${cu}&am=${am}` },
-        { name: "PhonePe", url: `phonepe://upi/pay?pa=${pa}&pn=${pn}&cu=${cu}&am=${am}` },
-        { name: "Paytm", url: `paytmmp://pay?pa=${pa}&pn=${pn}&cu=${cu}&am=${am}` },
-        { name: "Intent Link", url: `intent://pay?pa=${pa}&pn=${pn}&cu=${cu}&am=${am}#Intent;scheme=upi;package=com.google.android.apps.nbu.paisa.user;end;` },
-        { name: "Generic UPI", url: upiURL }
-      ];
-
-      const container = document.getElementById('paymentButtons');
-      buttons.forEach(btn => {
-        const a = document.createElement('a');
-        a.textContent = `Pay with ${btn.name}`;
-        a.href = btn.url;
-        a.className = 'btn';
-        a.style.margin = '6px';
-        a.style.display = 'inline-block';
-        a.style.textDecoration = 'none';
-        container.appendChild(a);
-      });
-
-    } else {
-      location.replace("linkpe.html?error");
-    }
-  </script>
+  <!-- Load your custom UPI redirection logic -->
+  <script src="payment.js"></script>
 </body>
 
 </html>
